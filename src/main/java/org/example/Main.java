@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
@@ -30,7 +31,6 @@ public class Main {
             em.persist(unidadMedida);
             em.persist(unidadMedidapote);
 
-
             // Crear una nueva entidad Categoria en estado "nueva"
             Categoria categoria = Categoria.builder()
                     .denominacion("Frutas")
@@ -48,10 +48,9 @@ public class Main {
             em.persist(categoria);
             em.persist(categoriaPostre);
 
-
             // Crear una nueva entidad ArticuloInsumo en estado "nueva"
             ArticuloInsumo articuloInsumo = ArticuloInsumo.builder()
-                    .denominacion("Manzana").codigo(Long.toString(new Date().getTime()))
+                    .denominacion("Manzana").codigo(UUID.randomUUID().toString()) // <--- CAMBIO ACÁ
                     .precioCompra(1.5)
                     .precioVenta(5d)
                     .stockActual(100)
@@ -62,7 +61,7 @@ public class Main {
 
 
             ArticuloInsumo articuloInsumoPera = ArticuloInsumo.builder()
-                    .denominacion("Pera").codigo(Long.toString(new Date().getTime()))
+                    .denominacion("Pera").codigo(UUID.randomUUID().toString()) // <--- CAMBIO ACÁ
                     .precioCompra(2.5)
                     .precioVenta(10d)
                     .stockActual(130)
@@ -71,7 +70,7 @@ public class Main {
                     .unidadMedida(unidadMedida)
                     .build();
 
-            // Persistir la entidad ArticuloInsumo en estado "gestionada"
+// Persistir la entidad ArticuloInsumo en estado "gestionada"
 
             em.persist(articuloInsumo);
             em.persist(articuloInsumoPera);
@@ -86,15 +85,12 @@ public class Main {
             Imagen pera2 = Imagen.builder().denominacion("Pera Roja").
                     build();
 
-
-
-
             // Agregar el ArticuloInsumo a la Categoria
             categoria.getArticulos().add(articuloInsumo);
             categoria.getArticulos().add(articuloInsumoPera);
             // Actualizar la entidad Categoria en la base de datos
 
-         // em.merge(categoria);
+            // em.merge(categoria);
 
             // Crear una nueva entidad ArticuloManufacturadoDetalle en estado "nueva"
             ArticuloManufacturadoDetalle detalleManzana = ArticuloManufacturadoDetalle.builder()
@@ -111,6 +107,7 @@ public class Main {
             // Crear una nueva entidad ArticuloManufacturado en estado "nueva"
             ArticuloManufacturado articuloManufacturado = ArticuloManufacturado.builder()
                     .denominacion("Ensalada de frutas")
+                    .codigo(UUID.randomUUID().toString()) // <--- CAMBIO ACÁ (MUY IMPORTANTE)
                     .descripcion("Ensalada de manzanas y peras ")
                     .precioVenta(150d)
                     .tiempoEstimadoMinutos(10)
@@ -192,11 +189,9 @@ public class Main {
             }
 
 
-
-                //   em.getTransaction().begin();
-        //   em.remove(articuloManufacturado);
-       //    em.getTransaction().commit();
-
+            //   em.getTransaction().begin();
+            //   em.remove(articuloManufacturado);
+            //   em.getTransaction().commit();
 
 
             // Cerrar el EntityManager y el EntityManagerFactory
@@ -212,17 +207,26 @@ public class Main {
 /*
 
 Manejo del Ciclo de Estados en JPA
-El ciclo de estados en JPA (Java Persistence API) define los diferentes estados que puede tener una entidad en relación con el contexto de persistencia (EntityManager). Comprender y manejar correctamente estos estados es crucial para trabajar eficazmente con JPA. Los estados del ciclo de vida de una entidad en JPA son:
+El ciclo de estados en JPA (Java Persistence API) define los diferentes
+estados que puede tener una entidad en relación con el contexto de persistencia
+(EntityManager). Comprender y manejar correctamente estos estados es crucial
+para trabajar eficazmente con JPA. Los estados del ciclo de vida de una entidad en JPA son:
 
 New (Nuevo):
 
-Una entidad está en estado "New" cuando ha sido creada pero aún no ha sido persistida en la base de datos.
+Una entidad está en estado "New" cuando ha sido creada pero aún no ha sido persistida
+en la base de datos.
+
 Managed (Gestionado):
 
-Una entidad está en estado "Managed" cuando está asociada con un contexto de persistencia (EntityManager) y cualquier cambio en la entidad se reflejará automáticamente en la base de datos.
+Una entidad está en estado "Managed" cuando está asociada con un contexto de persistencia
+(EntityManager) y cualquier cambio en la entidad se reflejará automáticamente en la base de datos.
+
 Detached (Desconectado):
 
-Una entidad está en estado "Detached" cuando ya no está asociada con un contexto de persistencia. Los cambios en la entidad no se reflejarán automáticamente en la base de datos.
+Una entidad está en estado "Detached" cuando ya no está asociada con un contexto de persistencia.
+Los cambios en la entidad no se reflejarán automáticamente en la base de datos.
+
 Removed (Eliminado):
 
 Una entidad está en estado "Removed" cuando ha sido marcada para su eliminación en la base de datos.

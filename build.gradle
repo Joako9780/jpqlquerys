@@ -14,7 +14,7 @@ dependencies {
     // Envers
     implementation 'org.hibernate:hibernate-envers:5.6.10.Final' // Usa una versión anterior de Hibernate Envers
     implementation 'org.hibernate:hibernate-entitymanager:5.6.10.Final' // Asegúrate de incluir esta dependencia
-   // LOmbock
+    // LOmbock
     implementation 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 

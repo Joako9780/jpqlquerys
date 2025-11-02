@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainConsultasJPQL {
-
     public static void main(String[] args) {
-        //REPOSITORIO-> https://github.com/gerardomagni/jpqlquerys.git
+    //REPOSITORIO-> https://github.com/gerardomagni/jpqlquerys.git
 
         //buscarFacturas();
         //buscarFacturasActivas();
@@ -26,6 +25,11 @@ public class MainConsultasJPQL {
         //mostrarMaximoNroFactura();
         //buscarClientesXIds();
         //buscarClientesXRazonSocialParcial();
+
+        //buscarFacturasUltimosTresMesesXCliente();
+        //mostrarMontoTotalFacturadoPorCliente();
+        //listarArticulosDeFactura();
+        //mostrarArticuloMasCaroDeFactura();
     }
 
 
@@ -201,6 +205,52 @@ public class MainConsultasJPQL {
             }
             System.out.println("Total: $" + FuncionApp.getFormatMilDecimal(fact.getTotal(),2));
             System.out.println("*************************");
+        }
+    }
+    // === EJERCICIO 5 ===
+    public static void buscarFacturasUltimosTresMesesXCliente() {
+        FacturaManager mFactura = new FacturaManager(true);
+        try {
+            List<Factura> facturas = mFactura.getFacturasUltimosTresMesesXCliente(3L);
+            mostrarFacturas(facturas);
+        } finally {
+            mFactura.cerrarEntityManager();
+        }
+    }
+
+    // === EJERCICIO 6 ===
+    public static void mostrarMontoTotalFacturadoPorCliente() {
+        FacturaManager mFactura = new FacturaManager(true);
+        try {
+            Double total = mFactura.getMontoTotalFacturadoPorCliente(3L);
+            System.out.println("Total facturado por el cliente: $" + FuncionApp.getFormatMilDecimal(total, 2));
+        } finally {
+            mFactura.cerrarEntityManager();
+        }
+    }
+
+    // === EJERCICIO 7 ===
+    public static void listarArticulosDeFactura() {
+        FacturaManager mFactura = new FacturaManager(true);
+        try {
+            List<Articulo> articulos = mFactura.getArticulosDeFactura(10L);
+            for (Articulo art : articulos) {
+                System.out.println("ID: " + art.getId() + " - " + art.getDenominacion());
+            }
+        } finally {
+            mFactura.cerrarEntityManager();
+        }
+    }
+
+    // === EJERCICIO 8 ===
+    public static void mostrarArticuloMasCaroDeFactura() {
+        FacturaManager mFactura = new FacturaManager(true);
+        try {
+            Articulo articulo = mFactura.getArticuloMasCaroDeFactura(10L);
+            System.out.println("Artículo más caro: " + articulo.getDenominacion() +
+                    " - $" + FuncionApp.getFormatMilDecimal(articulo.getPrecioVenta(), 2));
+        } finally {
+            mFactura.cerrarEntityManager();
         }
     }
 
