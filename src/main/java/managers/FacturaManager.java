@@ -100,7 +100,7 @@ public class FacturaManager {
     }
 
     // =====================================================
-    // NUEVOS MÉTODOS (EJERCICIOS 5–8)
+    // NUEVOS MÉTODOS (EJERCICIOS 5–8, 2, 9, 10, 11, 14)
     // =====================================================
 
     /**
@@ -161,6 +161,70 @@ public class FacturaManager {
         query.setMaxResults(1); // Solo devuelve el más caro
 
         return (Articulo) query.getSingleResult();
+    }
+
+    /**
+     * Ejercicio 2: listar facturas del último mes
+     */
+    public List<Factura> getFacturasUltimoMes() {
+        LocalDate fechaDesde = LocalDate.now().minusMonths(1);
+        String jpql = "SELECT f FROM Factura f WHERE f.fechaComprobante >= :fechaDesde";
+        Query query = em.createQuery(jpql, Factura.class);
+        query.setParameter("fechaDesde", fechaDesde);
+        return query.getResultList();
+    }
+
+    /**
+     * Ejercicio 9: Contar la cantidad total de facturas generadas
+     */
+    public Long getCantidadTotalFacturas() {
+        String jpql = "SELECT COUNT(f) FROM Factura f";
+        Query query = em.createQuery(jpql, Long.class);
+        // Manejo de nulos: COUNT(f) nunca es nulo, pero getSingleResult puede serlo si la tabla está vacía.
+        try {
+            return (Long) query.getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            return 0L;
+        }
+    }
+
+    /**
+     * Ejercicio 10: Listar facturas con un total mayor a X
+     */
+    public List<Factura> getFacturasSuperioresA(double valorMinimo) {
+        String jpql = "SELECT f FROM Factura f WHERE f.total > :valor";
+        Query query = em.createQuery(jpql, Factura.class);
+        query.setParameter("valor", valorMinimo);
+        return query.getResultList();
+    }
+
+    /**
+     * Ejercicio 11: Consultar las facturas que contienen un Artículo específico (por nombre)
+     */
+    public List<Factura> getFacturasPorDenominacionArticulo(String nombreDenominacion) {
+        // CORRECCIÓN: Tu entidad Articulo usa 'denominacion', no 'nombre'.
+        // CORRECCIÓN: El JOIN debe ser sobre 'detallesFactura', como en tu entidad Factura.
+        String jpql = "SELECT DISTINCT f FROM Factura f " +
+                "JOIN f.detallesFactura d " +
+                "WHERE d.articulo.denominacion = :nombreDenominacion";
+
+        Query query = em.createQuery(jpql, Factura.class);
+        query.setParameter("nombreDenominacion", nombreDenominacion);
+        return query.getResultList();
+    }
+
+    /**
+     * Ejercicio 14: Listar facturas que contienen un artículo (usando EXISTS)
+     */
+    public List<Factura> getFacturasPorArticuloConExists(Long idArticulo) {
+        String jpql = "SELECT f FROM Factura f " +
+                "WHERE EXISTS (SELECT d FROM FacturaDetalle d " +
+                "              WHERE d.factura = f AND d.articulo.id = :idArticulo) " +
+                "ORDER BY f.fechaComprobante DESC";
+
+        Query query = em.createQuery(jpql, Factura.class);
+        query.setParameter("idArticulo", idArticulo);
+        return query.getResultList();
     }
 
     // =====================================================

@@ -2,7 +2,6 @@ package managers;
 
 import funciones.FuncionApp;
 import org.example.Cliente;
-import org.example.Factura;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,6 +31,10 @@ public class ClienteManager {
 
     }
 
+    // =====================================================
+    // MÉTODOS ORIGINALES
+    // =====================================================
+
     public List<Cliente> getClientesXIds(List<Long> idsClientes){
         String jpql = "FROM Cliente WHERE id IN (:idsClientes) ORDER BY razonSocial ASC";
         Query query = em.createQuery(jpql);
@@ -48,11 +51,6 @@ public class ClienteManager {
         Query query = em.createQuery(jpql.toString());
         List<Cliente> clientes = query.getResultList();
         return clientes;
-    }
-
-    public void cerrarEntityManager(){
-        em.close();
-        emf.close();
     }
 
     public String parseSearchField(String field, String value) {
@@ -91,4 +89,48 @@ public class ClienteManager {
 
         return "";
     }
+
+    // =====================================================
+    // NUEVOS MÉTODOS (EJERCICIOS 1 y 3)
+    // =====================================================
+
+    /**
+     * Ejercicio 1: Listar todos los clientes
+     */
+    public List<Cliente> getClientes() {
+        String jpql = "SELECT c FROM Cliente c";
+        Query query = em.createQuery(jpql, Cliente.class);
+        return query.getResultList();
+    }
+
+    /**
+     * Ejercicio 3: Obtener el cliente que ha generado más facturas
+     * Devuelve [Cliente, CantidadDeFacturas]
+     */
+    public Object[] getClienteConMasFacturas() {
+        // CORRECCIÓN: Faltaban espacios en el JPQL original
+        String jpql = "SELECT f.cliente, COUNT(f) " +
+                "FROM Factura f " +
+                "GROUP BY f.cliente " +
+                "ORDER BY COUNT(f) DESC";
+
+        Query query = em.createQuery(jpql, Object[].class);
+        query.setMaxResults(1); // Solo queremos el top 1
+
+        List<Object[]> resultados = query.getResultList();
+        if (resultados.isEmpty()) {
+            return null;
+        }
+        return resultados.get(0); // Devuelve la primera fila (Cliente, COUNT)
+    }
+
+    // =====================================================
+    // CIERRE DEL ENTITY MANAGER
+    // =====================================================
+
+    public void cerrarEntityManager(){
+        em.close();
+        emf.close();
+    }
+
 }
