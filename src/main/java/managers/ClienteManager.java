@@ -24,6 +24,9 @@ public class ClienteManager {
         }else{
             properties.put("hibernate.show_sql", "true");
         }
+
+        properties.put("hibernate.hbm2ddl.auto", "update");
+
         emf = Persistence.createEntityManagerFactory("example-unit", properties);
         em = emf.createEntityManager();
 

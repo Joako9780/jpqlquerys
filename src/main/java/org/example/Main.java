@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -157,7 +158,8 @@ public class Main {
             Factura factura = Factura.builder()
                     .puntoVenta(2024)
                     .fechaAlta(new Date())
-                    .fechaComprobante(FuncionApp.generateRandomDate())
+                    // ANTES: .fechaComprobante(FuncionApp.generateRandomDate())
+                    .fechaComprobante(LocalDate.now().minusDays(10)) // <--- CAMBIO
                     .cliente(cliente)
                     .nroComprobante(FuncionApp.generateRandomNumber())
                     .build();

@@ -3,16 +3,19 @@ package managers;
 import funciones.FuncionApp;
 import org.example.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainConsultasJPQL {
     public static void main(String[] args) {
     //REPOSITORIO-> https://github.com/gerardomagni/jpqlquerys.git
+
+        // Esta línea le dice al sistema de logs de Java: "Para cualquier mensaje que venga de org.hibernate,
+        // solo quiero ver los de nivel SEVERE (errores graves)"
+        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         //buscarFacturas();
         //buscarFacturasActivas();
@@ -26,10 +29,10 @@ public class MainConsultasJPQL {
         //buscarClientesXIds();
         //buscarClientesXRazonSocialParcial();
 
-        //buscarFacturasUltimosTresMesesXCliente();
-        //mostrarMontoTotalFacturadoPorCliente();
-        //listarArticulosDeFactura();
-        //mostrarArticuloMasCaroDeFactura();
+        buscarFacturasUltimosTresMesesXCliente(1L);
+        mostrarMontoTotalFacturadoPorCliente(1L);
+        listarArticulosDeFactura(1L);
+        mostrarArticuloMasCaroDeFactura(1L);
     }
 
 
@@ -194,8 +197,9 @@ public class MainConsultasJPQL {
     }
 
     public static void mostrarFacturas(List<Factura> facturas){
+        System.out.println("\n ===== FACTURAS =====");
         for(Factura fact : facturas){
-            System.out.println("N° Comp: " + fact.getStrProVentaNroComprobante());
+            System.out.println("\nN° Comp: " + fact.getStrProVentaNroComprobante());
             System.out.println("Fecha: " + FuncionApp.formatLocalDateToString(fact.getFechaComprobante()));
             System.out.println("CUIT Cliente: " + FuncionApp.formatCuitConGuiones(fact.getCliente().getCuit()));
             System.out.println("Cliente: " + fact.getCliente().getRazonSocial() + " ("+fact.getCliente().getId() + ")");
@@ -208,10 +212,10 @@ public class MainConsultasJPQL {
         }
     }
     // === EJERCICIO 5 ===
-    public static void buscarFacturasUltimosTresMesesXCliente() {
+    public static void buscarFacturasUltimosTresMesesXCliente(Long id) {
         FacturaManager mFactura = new FacturaManager(true);
         try {
-            List<Factura> facturas = mFactura.getFacturasUltimosTresMesesXCliente(3L);
+            List<Factura> facturas = mFactura.getFacturasUltimosTresMesesXCliente(id);
             mostrarFacturas(facturas);
         } finally {
             mFactura.cerrarEntityManager();
@@ -219,10 +223,11 @@ public class MainConsultasJPQL {
     }
 
     // === EJERCICIO 6 ===
-    public static void mostrarMontoTotalFacturadoPorCliente() {
+    public static void mostrarMontoTotalFacturadoPorCliente(Long id) {
         FacturaManager mFactura = new FacturaManager(true);
         try {
-            Double total = mFactura.getMontoTotalFacturadoPorCliente(3L);
+            Double total = mFactura.getMontoTotalFacturadoPorCliente(id);
+            System.out.println("\n ===== TOTAL FACTURADO POR CLIENTE =====");
             System.out.println("Total facturado por el cliente: $" + FuncionApp.getFormatMilDecimal(total, 2));
         } finally {
             mFactura.cerrarEntityManager();
@@ -230,10 +235,11 @@ public class MainConsultasJPQL {
     }
 
     // === EJERCICIO 7 ===
-    public static void listarArticulosDeFactura() {
+    public static void listarArticulosDeFactura(Long id) {
         FacturaManager mFactura = new FacturaManager(true);
         try {
-            List<Articulo> articulos = mFactura.getArticulosDeFactura(10L);
+            List<Articulo> articulos = mFactura.getArticulosDeFactura(id);
+            System.out.println("\n ===== LISTA DE ARTÍCULOS DE FACTURA =====");
             for (Articulo art : articulos) {
                 System.out.println("ID: " + art.getId() + " - " + art.getDenominacion());
             }
@@ -243,10 +249,11 @@ public class MainConsultasJPQL {
     }
 
     // === EJERCICIO 8 ===
-    public static void mostrarArticuloMasCaroDeFactura() {
+    public static void mostrarArticuloMasCaroDeFactura(Long id) {
         FacturaManager mFactura = new FacturaManager(true);
         try {
-            Articulo articulo = mFactura.getArticuloMasCaroDeFactura(10L);
+            Articulo articulo = mFactura.getArticuloMasCaroDeFactura(id);
+            System.out.println("\n ===== ARTICULO MAS CARO =====");
             System.out.println("Artículo más caro: " + articulo.getDenominacion() +
                     " - $" + FuncionApp.getFormatMilDecimal(articulo.getPrecioVenta(), 2));
         } finally {
