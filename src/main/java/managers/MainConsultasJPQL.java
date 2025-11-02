@@ -31,7 +31,7 @@ public class MainConsultasJPQL {
         //buscarClientesXIds();
         //buscarClientesXRazonSocialParcial();
 
-        System.out.println("--- INICIO DE PRUEBAS ---");
+        System.out.println(" ///// INICIO DE PRUEBAS /////");
 
         // === EJERCICIOS RESUELTOS ===
 
@@ -77,7 +77,7 @@ public class MainConsultasJPQL {
         System.out.println("\n--- Ejercicio 14: Facturas con Artículo 1L (Manzana) ---");
         listarFacturasPorArticuloConExists(1L);
 
-        System.out.println("\n--- FIN DE PRUEBAS ---");
+        System.out.println("\n///// FIN DE PRUEBAS /////");
     }
 
 
